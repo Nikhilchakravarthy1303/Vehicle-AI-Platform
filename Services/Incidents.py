@@ -7,7 +7,7 @@ def get_incidents_service():
     try:
         return get_incidents_db()
     except Exception as e:
-        raise IncidentRetrievalError(f"Error fetching incidents: {e}")
+        raise IncidentRetrievalError(f"Error fetching incidents") from e
 
 
 def create_incident_service(data):
@@ -49,7 +49,7 @@ def create_incident_service(data):
             })
             return VehicleIncidentResponseModel(category="general", status="normal", action="Monitor vehicle")
     except Exception as e:
-        raise IncidentCreationError(f"Error creating incident: {e}")
+        raise IncidentCreationError(f"Error creating incident") from e
 
 
 
@@ -63,7 +63,7 @@ def get_incident_by_id_service(id):
     except IncidentNotFoundError:
         raise
     except IncidentRetrievalError as e:
-        raise IncidentRetrievalError(f"Error fetching incident by ID: {e}")
+        raise IncidentRetrievalError(f"Error fetching incident by ID") from e
 
 
 
@@ -79,7 +79,7 @@ def update_incident_id_service(id, data):
     except IncidentNotFoundError:
         raise
     except IncidentUpdateError as e:
-        raise IncidentUpdateError(f"Error updating incident: {e}")
+        raise IncidentUpdateError(f"Error updating incident") from e
 
 
 
@@ -95,4 +95,4 @@ def delete_incident_id_service(id):
     except IncidentNotFoundError:
         raise   
     except IncidentDeletionError as e:
-        raise IncidentDeletionError(f"Error deleting incident: {e}")
+        raise IncidentDeletionError(f"Error deleting incident") from e
