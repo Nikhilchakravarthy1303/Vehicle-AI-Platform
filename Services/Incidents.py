@@ -1,60 +1,98 @@
 from Models.VehicleIncidentModel import *
 from DatabaseLayer.db import get_incidents_db, create_incident_db, get_incident_by_id_db, update_incident_id_db, delete_incident_id_db
+from Services.Exceptions.IncidentExceptions import *
+
 
 def get_incidents_service():
-    return get_incidents_db()
+    try:
+        return get_incidents_db()
+    except Exception as e:
+        raise IncidentRetrievalError(f"Error fetching incidents: {e}")
+
 
 def create_incident_service(data):
-    if "engine" in data["issue"].lower():
-        create_incident_db({
-            "vehicle": data["vehicle"],
-            "issue": data["issue"],
-            "category": "engine",
-            "status": "high",
-            "action": "Inspect immediately"
-        })
-        return VehicleIncidentResponseModel(category="engine", status="high", action="Inspect immediately")
-    elif "brake" in data["issue"].lower():
-        create_incident_db({
-            "vehicle": data["vehicle"],
-            "issue": data["issue"],
-            "category": "brake",
-            "status": "critical",
-            "action": "Inspect immediately"
-        })
-        return VehicleIncidentResponseModel(category="brake", status="critical", action="Inspect immediately")
-    elif "battery" in data["issue"].lower():
-        create_incident_db({
-            "vehicle": data["vehicle"],
-            "issue": data["issue"],
-            "category": "battery",
-            "status": "medium",
-            "action": "Schedule maintenance"
-        })
-        return VehicleIncidentResponseModel(category="battery", status="medium", action="Schedule maintenance")
-    else:
-        create_incident_db({
-            "vehicle": data["vehicle"],
-            "issue": data["issue"],
-            "category": "general",
-            "status": "normal",
-            "action": "Monitor vehicle"
-        })
-        return VehicleIncidentResponseModel(category="general", status="normal", action="Monitor vehicle")
-    
+    try:
+        if "engine" in data["issue"].lower():
+            create_incident_db({
+                "vehicle": data["vehicle"],
+                "issue": data["issue"],
+                "category": "engine",
+                "status": "high",
+                "action": "Inspect immediately"
+            })
+            return VehicleIncidentResponseModel(category="engine", status="high", action="Inspect immediately")
+        elif "brake" in data["issue"].lower():
+            create_incident_db({
+                "vehicle": data["vehicle"],
+                "issue": data["issue"],
+                "category": "brake",
+                "status": "critical",
+                "action": "Inspect immediately"
+            })
+            return VehicleIncidentResponseModel(category="brake", status="critical", action="Inspect immediately")
+        elif "battery" in data["issue"].lower():
+            create_incident_db({
+                "vehicle": data["vehicle"],
+                "issue": data["issue"],
+                "category": "battery",
+                "status": "medium",
+                "action": "Schedule maintenance"
+            })
+            return VehicleIncidentResponseModel(category="battery", status="medium", action="Schedule maintenance")
+        else:
+            create_incident_db({
+                "vehicle": data["vehicle"],
+                "issue": data["issue"],
+                "category": "general",
+                "status": "normal",
+                "action": "Monitor vehicle"
+            })
+            return VehicleIncidentResponseModel(category="general", status="normal", action="Monitor vehicle")
+    except Exception as e:
+        raise IncidentCreationError(f"Error creating incident: {e}")
+
+
+
 def get_incident_by_id_service(id):
-    incidents = get_incident_by_id_db(id)
-    if incidents:
-        return incidents[0]
-    else:
-        return None
-    
+    try:
+        incidents = get_incident_by_id_db(id)
+        if incidents:
+            return incidents[0]
+        else:
+            raise IncidentNotFoundError(f"Incident with id {id} not found")
+    except IncidentNotFoundError:
+        raise
+    except IncidentRetrievalError as e:
+        raise IncidentRetrievalError(f"Error fetching incident by ID: {e}")
+
+
+
 def update_incident_id_service(id, data):
     # This function would contain logic to update the incident in the database
     # For now, it's a placeholder to show where the update logic would go
-    return update_incident_id_db(id, data)
+    try:
+        incidents = get_incident_by_id_db(id)
+        if not incidents:
+            raise IncidentNotFoundError(f"Incident with id {id} not found")
+        update_incident_id_db(id, data)
+        return {"message": "Incident updated successfully"}
+    except IncidentNotFoundError:
+        raise
+    except IncidentUpdateError as e:
+        raise IncidentUpdateError(f"Error updating incident: {e}")
+
+
 
 def delete_incident_id_service(id):
     # This function would contain logic to delete the incident from the database
     # For now, it's a placeholder to show where the delete logic would go
-    return delete_incident_id_db(id)
+    try:
+        incidents = get_incident_by_id_db(id)
+        if not incidents:
+            raise IncidentNotFoundError(f"Incident with id {id} not found")
+        delete_incident_id_db(id)
+        return {"message": "Incident deleted successfully"}
+    except IncidentNotFoundError:
+        raise   
+    except IncidentDeletionError as e:
+        raise IncidentDeletionError(f"Error deleting incident: {e}")

@@ -1,24 +1,27 @@
 import sqlite3
 
+
 def init_db():
-    # Simulate database initialization (e.g., creating tables)
-    conn = sqlite3.connect("Vehicle_Incidents.db")
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS incidents (
-            id INTEGER PRIMARY KEY,
-            vehicle TEXT,
-            issue TEXT,
-            category TEXT,
-            status TEXT,
-            action TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
+    try:
+        conn = sqlite3.connect("Vehicle_Incidents.db")
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS incidents (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            vehicle TEXT,
+                            issue TEXT,
+                            category TEXT,
+                            status TEXT,
+                            action TEXT
+                        )''')
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        raise e
+
 
 
 def get_incidents_db():
+    try:
         conn = sqlite3.connect("Vehicle_Incidents.db")
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM incidents")
@@ -34,7 +37,12 @@ def get_incidents_db():
                 "action": row[5]
             }
             incidents.append(incident)
-        return incidents 
+        conn.close()
+        return incidents
+    except Exception as e:
+        raise e
+
+
 
 def create_incident_db(incident_data):
     try:
@@ -44,7 +52,9 @@ def create_incident_db(incident_data):
         conn.commit()
         conn.close()
     except Exception as e:
-        print(f"Error creating incident: {e}")
+        raise e
+
+
 
 def get_incident_by_id_db(id):
     try:
@@ -65,9 +75,10 @@ def get_incident_by_id_db(id):
         else:
             return []
     except Exception as e:
-        print(f"Error fetching incident by ID: {e}")
-        return []
-    
+        raise e
+
+
+
 def update_incident_id_db(id, data):
     try:
         conn = sqlite3.connect("Vehicle_Incidents.db")
@@ -77,7 +88,10 @@ def update_incident_id_db(id, data):
         conn.close()
         return {"message": "Incident updated successfully"}
     except Exception as e:
-        print(f"Error updating incident: {e}")
+        raise e
+
+
+
 
 def delete_incident_id_db(id):
     try:
@@ -88,4 +102,4 @@ def delete_incident_id_db(id):
         conn.close()
         return {"message": "Incident deleted successfully"}
     except Exception as e:
-        print(f"Error deleting incident: {e}")
+        raise e
