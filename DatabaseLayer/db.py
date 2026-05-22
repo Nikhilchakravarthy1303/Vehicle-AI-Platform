@@ -1,9 +1,12 @@
 import sqlite3
+import os
+
+DATABASE_PATH = os.getenv("DATABASE_PATH", "Vehicle_Incidents.db")
 
 
 def init_db():
     try:
-        conn = sqlite3.connect("Vehicle_Incidents.db")
+        conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS incidents (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,7 +25,7 @@ def init_db():
 
 def get_incidents_db():
     try:
-        conn = sqlite3.connect("Vehicle_Incidents.db")
+        conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM incidents")
         rows = cursor.fetchall()
@@ -46,7 +49,7 @@ def get_incidents_db():
 
 def create_incident_db(incident_data):
     try:
-        conn = sqlite3.connect("Vehicle_Incidents.db")
+        conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
         cursor.execute('''Insert into incidents ( vehicle, issue, category, status, action) values ( ?, ?, ?, ?, ?)''',( incident_data["vehicle"], incident_data["issue"], incident_data["category"], incident_data["status"], incident_data["action"]))
         conn.commit()
@@ -58,7 +61,7 @@ def create_incident_db(incident_data):
 
 def get_incident_by_id_db(id):
     try:
-        conn = sqlite3.connect("Vehicle_Incidents.db")
+        conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM incidents WHERE id=?", (id,))
         row = cursor.fetchone()
@@ -81,7 +84,7 @@ def get_incident_by_id_db(id):
 
 def update_incident_id_db(id, data):
     try:
-        conn = sqlite3.connect("Vehicle_Incidents.db")
+        conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
         cursor.execute('''UPDATE incidents SET status=?, action=? WHERE id=?''', (data["status"], data["action"], id))
         conn.commit()
@@ -95,7 +98,7 @@ def update_incident_id_db(id, data):
 
 def delete_incident_id_db(id):
     try:
-        conn = sqlite3.connect("Vehicle_Incidents.db")
+        conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
         cursor.execute('''DELETE FROM incidents WHERE id=?''', (id,))
         conn.commit()
