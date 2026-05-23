@@ -1,12 +1,21 @@
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from Models.VehicleIncidentModel import *
 from Services.Incidents import *
 from DatabaseLayer.db import init_db
 from Services.Exceptions.IncidentExceptions import *
 from WebTransportRegistration.Services.IncidentRegister import register_exception_handlers
+import os
+from dotenv import load_dotenv
+
+ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
+
+if ENVIRONMENT == "local":
+    load_dotenv(".env.local")
+elif ENVIRONMENT == "dev":
+    load_dotenv(".env.dev")
 
 init_db()  # Initialize the database when the application starts
-
 
 app = FastAPI() 
 
@@ -45,5 +54,8 @@ def update_incident_id_route(id: int, data: VehicleIncidentUpdateModel):
 @app.delete("/delete_incident/{id}")
 def delete_incident_route(id: int):
     return delete_incident_id_service(id)
-    
 
+
+@app.post("/summarize_incident")
+def summarize_incident_route(data: VehicleIncidentRequestModel):
+    return summarize_incident_service(data.model_dump())

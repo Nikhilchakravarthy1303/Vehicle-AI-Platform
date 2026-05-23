@@ -1,7 +1,8 @@
+from AIInferenceWorkflows.Exceptions.IncidentAIExceptions import *
 from Models.VehicleIncidentModel import *
 from DatabaseLayer.db import get_incidents_db, create_incident_db, get_incident_by_id_db, update_incident_id_db, delete_incident_id_db
 from Services.Exceptions.IncidentExceptions import *
-
+from AIInferenceWorkflows.IncidentSummarizationWorkflow import summarize_incident
 
 def get_incidents_service():
     try:
@@ -96,3 +97,10 @@ def delete_incident_id_service(id):
         raise   
     except IncidentDeletionError as e:
         raise IncidentDeletionError(f"Error deleting incident") from e
+    
+def summarize_incident_service(data):
+    try:
+        summary = summarize_incident(data)
+        return {"summary": summary}
+    except Exception as e:
+        raise IncidentSummarizationError(f"Error summarizing incident") from e

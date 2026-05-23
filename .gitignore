@@ -6,5 +6,7 @@ ImplementationPlan.md
 
 .venv/
 
+.env.local
+.env.dev
 
 vehicle_incidents.log
