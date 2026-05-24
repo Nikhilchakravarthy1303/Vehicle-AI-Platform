@@ -10,3 +10,5 @@ ImplementationPlan.md
 .env.dev
 
 vehicle_incidents.log
+
+chroma_db/

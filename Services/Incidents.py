@@ -1,8 +1,8 @@
-from AIInferenceWorkflows.Exceptions.IncidentAIExceptions import *
+from AIIntelligenceWorkflows.Exceptions.IncidentAIExceptions import *
 from Models.VehicleIncidentModel import *
 from DatabaseLayer.db import get_incidents_db, create_incident_db, get_incident_by_id_db, update_incident_id_db, delete_incident_id_db
 from Services.Exceptions.IncidentExceptions import *
-from AIInferenceWorkflows.IncidentSummarizationWorkflow import summarize_incident
+from AIIntelligenceWorkflows.IncidentAIWorkflow import process_incident_intelligence
 
 def get_incidents_service():
     try:
@@ -13,42 +13,7 @@ def get_incidents_service():
 
 def create_incident_service(data):
     try:
-        if "engine" in data["issue"].lower():
-            create_incident_db({
-                "vehicle": data["vehicle"],
-                "issue": data["issue"],
-                "category": "engine",
-                "status": "high",
-                "action": "Inspect immediately"
-            })
-            return VehicleIncidentResponseModel(category="engine", status="high", action="Inspect immediately")
-        elif "brake" in data["issue"].lower():
-            create_incident_db({
-                "vehicle": data["vehicle"],
-                "issue": data["issue"],
-                "category": "brake",
-                "status": "critical",
-                "action": "Inspect immediately"
-            })
-            return VehicleIncidentResponseModel(category="brake", status="critical", action="Inspect immediately")
-        elif "battery" in data["issue"].lower():
-            create_incident_db({
-                "vehicle": data["vehicle"],
-                "issue": data["issue"],
-                "category": "battery",
-                "status": "medium",
-                "action": "Schedule maintenance"
-            })
-            return VehicleIncidentResponseModel(category="battery", status="medium", action="Schedule maintenance")
-        else:
-            create_incident_db({
-                "vehicle": data["vehicle"],
-                "issue": data["issue"],
-                "category": "general",
-                "status": "normal",
-                "action": "Monitor vehicle"
-            })
-            return VehicleIncidentResponseModel(category="general", status="normal", action="Monitor vehicle")
+        return process_incident_intelligence(data)
     except Exception as e:
         raise IncidentCreationError(f"Error creating incident") from e
 
@@ -98,9 +63,5 @@ def delete_incident_id_service(id):
     except IncidentDeletionError as e:
         raise IncidentDeletionError(f"Error deleting incident") from e
     
-def summarize_incident_service(data):
-    try:
-        summary = summarize_incident(data)
-        return {"summary": summary}
-    except Exception as e:
-        raise IncidentSummarizationError(f"Error summarizing incident") from e
+
+

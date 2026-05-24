@@ -53,7 +53,9 @@ def create_incident_db(incident_data):
         cursor = conn.cursor()
         cursor.execute('''Insert into incidents ( vehicle, issue, category, status, action) values ( ?, ?, ?, ?, ?)''',( incident_data["vehicle"], incident_data["issue"], incident_data["category"], incident_data["status"], incident_data["action"]))
         conn.commit()
+        incident_id = cursor.lastrowid
         conn.close()
+        return incident_id
     except Exception as e:
         raise e
 

@@ -56,6 +56,3 @@ def delete_incident_route(id: int):
     return delete_incident_id_service(id)
 
 
-@app.post("/summarize_incident")
-def summarize_incident_route(data: VehicleIncidentRequestModel):
-    return summarize_incident_service(data.model_dump())

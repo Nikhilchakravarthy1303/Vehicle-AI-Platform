@@ -118,9 +118,9 @@ async def incident_deletion_handler(
         }
     )
 
-async def incident_summarization_handler(
+async def incident_processing_handler(
     request: Request,
-    exc: IncidentSummarizationError
+    exc: IncidentProcessingError
 ):
 
     logger.exception(

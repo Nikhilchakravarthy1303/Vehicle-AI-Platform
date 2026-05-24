@@ -3,7 +3,7 @@ class IncidentAIError(Exception):
     pass
 
 
-class IncidentSummarizationError(IncidentAIError):
+class IncidentProcessingError(IncidentAIError):
     """Custom exception for errors during incident summarization."""
     pass
 
