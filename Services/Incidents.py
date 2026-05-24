@@ -3,6 +3,7 @@ from Models.VehicleIncidentModel import *
 from DatabaseLayer.db import get_incidents_db, create_incident_db, get_incident_by_id_db, update_incident_id_db, delete_incident_id_db
 from Services.Exceptions.IncidentExceptions import *
 from AIIntelligenceWorkflows.IncidentAIWorkflow import process_incident_intelligence
+from AIIntelligenceWorkflows.IncidentIntelligenceRetrievalWorkflow import retrieve_incidents_intelligence
 
 def get_incidents_service():
     try:
@@ -62,6 +63,13 @@ def delete_incident_id_service(id):
         raise   
     except IncidentDeletionError as e:
         raise IncidentDeletionError(f"Error deleting incident") from e
+    
+
+def search_query(query):
+    try:
+        return retrieve_incidents_intelligence(query)
+    except Exception as e:
+        raise IncidentRetrievalError(f"Error retrieving results for query: {query}") from e
     
 
 

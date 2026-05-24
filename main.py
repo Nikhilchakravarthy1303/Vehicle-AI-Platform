@@ -55,4 +55,6 @@ def update_incident_id_route(id: int, data: VehicleIncidentUpdateModel):
 def delete_incident_route(id: int):
     return delete_incident_id_service(id)
 
-
+@app.post("/semantic_search")
+def semantic_search_route(query: str):
+    return search_query(query)

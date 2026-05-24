@@ -7,3 +7,6 @@ class IncidentProcessingError(IncidentAIError):
     """Custom exception for errors during incident summarization."""
     pass
 
+class IncidentIntelligenceRetrievalError(IncidentAIError):
+    """Custom exception for errors during incident retrieval."""
+    pass

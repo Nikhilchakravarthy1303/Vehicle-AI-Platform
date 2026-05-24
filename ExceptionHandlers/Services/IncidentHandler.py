@@ -117,24 +117,3 @@ async def incident_deletion_handler(
             "message": str(exc)
         }
     )
-
-async def incident_processing_handler(
-    request: Request,
-    exc: IncidentProcessingError
-):
-
-    logger.exception(
-        f"""
-        Incident summarization failed |
-        method={request.method} |
-        path={request.url.path} |
-        detail={exc}
-        """
-    )
-
-    return JSONResponse(
-        status_code=500,
-        content={
-            "message": str(exc)
-        }
-    )

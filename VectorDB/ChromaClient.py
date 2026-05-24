@@ -11,5 +11,15 @@ def add_incident_to_chroma(incident_id, description, incident):
             metadatas=[incident]
         )
     except Exception as e:
-        print(f"Error adding incident to ChromaDB: {e}")
+        raise e
 
+
+def search_incidents_in_chroma(query):
+    try:
+        results = collection.query(
+            query_texts=[query],
+            n_results=5
+        )
+        return results
+    except Exception as e:
+        raise e
