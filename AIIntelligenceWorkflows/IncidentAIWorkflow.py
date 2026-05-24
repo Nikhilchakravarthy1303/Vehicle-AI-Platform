@@ -61,12 +61,13 @@ def process_incident_intelligence(incident_description):
         if parsed_response["severity"] not in valid_severities:
             raise IncidentProcessingError("Invalid severity level detected")
         
-        document = f"Incident: {incident_description}\nSummary: {parsed_response['summary']}\nCategory: {parsed_response['category']}\nSeverity: {parsed_response['severity']}\nRecommended Action: {parsed_response['recommended_action']}"
+        document = f"Incident: {incident_description}\nSummary: {parsed_response['summary']}\nCategory: {parsed_response['category']}\nSeverity: {parsed_response['severity']}\nRecommended Action: {parsed_response['recommended_action']}\nStatus: OPEN"
         incident_id = create_incident_db({
             "vehicle": incident_description["vehicle"],
             "issue": incident_description["issue"],
             "category": parsed_response["category"],
-            "status": parsed_response["severity"],
+            "severity": parsed_response["severity"],
+            "status": "OPEN",
             "action": parsed_response["recommended_action"]
         })
         add_incident_to_chroma(incident_id=incident_id, description=document, incident={"vehicle": incident_description["vehicle"], "issue": incident_description["issue"], "category": parsed_response["category"], "severity": parsed_response["severity"]})

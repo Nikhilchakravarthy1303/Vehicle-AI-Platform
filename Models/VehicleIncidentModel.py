@@ -17,6 +17,7 @@ class VehicleIncidentDBModel(BaseModel):
     category: str
     status: str
     action: str
+    severity: str
 
 class VehicleIncidentUpdateModel(BaseModel):
     status: str

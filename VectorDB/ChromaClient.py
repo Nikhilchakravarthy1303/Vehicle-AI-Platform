@@ -14,11 +14,12 @@ def add_incident_to_chroma(incident_id, description, incident):
         raise e
 
 
-def search_incidents_in_chroma(query):
+def search_incidents_in_chroma(query, filters=None):
     try:
         results = collection.query(
             query_texts=[query],
-            n_results=5
+            n_results=5,
+            where=filters
         )
         return results
     except Exception as e:

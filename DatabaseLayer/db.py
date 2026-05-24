@@ -13,9 +13,9 @@ def init_db():
                             vehicle TEXT,
                             issue TEXT,
                             category TEXT,
+                            severity TEXT,
                             status TEXT,
-                            action TEXT
-                        )''')
+                            action TEXT)''')
         conn.commit()
         conn.close()
     except Exception as e:
@@ -36,8 +36,9 @@ def get_incidents_db():
                 "vehicle": row[1],
                 "issue": row[2],
                 "category": row[3],
-                "status": row[4],
-                "action": row[5]
+                "severity": row[4],
+                "status": row[5],
+                "action": row[6]
             }
             incidents.append(incident)
         conn.close()
@@ -51,7 +52,7 @@ def create_incident_db(incident_data):
     try:
         conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
-        cursor.execute('''Insert into incidents ( vehicle, issue, category, status, action) values ( ?, ?, ?, ?, ?)''',( incident_data["vehicle"], incident_data["issue"], incident_data["category"], incident_data["status"], incident_data["action"]))
+        cursor.execute('''Insert into incidents ( vehicle, issue, category, severity, status, action) values ( ?, ?, ?, ?, ?, ?)''',( incident_data["vehicle"], incident_data["issue"], incident_data["category"], incident_data["severity"], incident_data["status"], incident_data["action"]))
         conn.commit()
         incident_id = cursor.lastrowid
         conn.close()
@@ -73,8 +74,9 @@ def get_incident_by_id_db(id):
                 "vehicle": row[1],
                 "issue": row[2],
                 "category": row[3],
-                "status": row[4],
-                "action": row[5]
+                "severity": row[4],
+                "status": row[5],
+                "action": row[6]
             }
             return [incident]
         else:
