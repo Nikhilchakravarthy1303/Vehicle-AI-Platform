@@ -16,6 +16,14 @@ def init_db():
                             severity TEXT,
                             status TEXT,
                             action TEXT)''')
+        cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS users (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        username TEXT UNIQUE,
+                        hashed_password TEXT,
+                        role TEXT
+                    )
+                    """)
         conn.commit()
         conn.close()
     except Exception as e:
@@ -108,5 +116,56 @@ def delete_incident_id_db(id):
         conn.commit()
         conn.close()
         return {"message": "Incident deleted successfully"}
+    except Exception as e:
+        raise e
+
+def create_user_db(username, hashed_password, role):
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        cursor.execute('''INSERT INTO users (username, hashed_password, role) VALUES (?, ?, ?)''', (username, hashed_password, role))
+        conn.commit()
+        user_id = cursor.lastrowid
+        conn.close()
+        return user_id
+    except Exception as e:
+        raise e
+    
+def get_users_db():
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, username, role FROM users")
+        rows = cursor.fetchall()
+        users = []
+        for row in rows:
+            user = {
+                "id": row[0],
+                "username": row[1],
+                "role": row[2]
+            }
+            users.append(user)
+        conn.close()
+        return users
+    except Exception as e:
+        raise e
+    
+
+def get_user_by_username_db(username):
+    try:
+        conn = sqlite3.connect(DATABASE_PATH)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id, username, hashed_password, role FROM users WHERE username=?", (username,))
+        row = cursor.fetchone()
+        if row:
+            user = {
+                "id": row[0],
+                "username": row[1],
+                "hashed_password": row[2],
+                "role": row[3]
+            }
+            return [user]
+        else:
+            return []
     except Exception as e:
         raise e

@@ -8,6 +8,9 @@ def register_exception_handlers(app):
         incident_creation_handler,
         incident_update_handler,
         incident_deletion_handler,
+        user_creation_handler,
+        user_retrieval_handler,
+        authentication_error_handler
     )
     
     app.add_exception_handler(IncidentNotFoundError, incident_not_found_handler)
@@ -15,3 +18,6 @@ def register_exception_handlers(app):
     app.add_exception_handler(IncidentCreationError, incident_creation_handler)
     app.add_exception_handler(IncidentUpdateError, incident_update_handler)
     app.add_exception_handler(IncidentDeletionError, incident_deletion_handler)
+    app.add_exception_handler(UserCreationError, user_creation_handler)
+    app.add_exception_handler(UserRetrievalError, user_retrieval_handler)
+    app.add_exception_handler(AuthenticationError, authentication_error_handler)

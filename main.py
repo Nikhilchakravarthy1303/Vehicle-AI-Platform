@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from Models.VehicleIncidentModel import *
+from Models.UserModel import *
 from Services.Incidents import *
 from DatabaseLayer.db import init_db
 from Services.Exceptions.IncidentExceptions import *
@@ -58,3 +59,15 @@ def delete_incident_route(id: int):
 @app.post("/semantic_search")
 def semantic_search_route(query: str):
     return search_query(query)
+
+@app.post("/create_user")
+def create_user_route(user: UserModel):
+    return create_user_service(user)
+
+@app.get("/users")
+def get_users_route():
+    return get_users_service()
+
+@app.post("/login")
+def login_route(user: UserModel):
+    return login_user_service(user)

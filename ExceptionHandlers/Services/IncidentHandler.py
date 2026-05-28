@@ -117,3 +117,67 @@ async def incident_deletion_handler(
             "message": str(exc)
         }
     )
+
+async def user_creation_handler(
+    request: Request,
+    exc: UserCreationError
+):
+
+    logger.exception(
+        f"""
+        User creation failed |
+        method={request.method} |
+        path={request.url.path} |
+        detail={exc}
+        """
+    )
+
+    return JSONResponse(
+        status_code=500,
+        content={
+            "message": str(exc)
+        }
+    )
+
+
+async def user_retrieval_handler(
+    request: Request,
+    exc: UserRetrievalError
+):
+
+    logger.exception(
+        f"""
+        User retrieval failed |
+        method={request.method} |
+        path={request.url.path} |
+        detail={exc}
+        """
+    )
+
+    return JSONResponse(
+        status_code=503,
+        content={
+            "message": str(exc)
+        }
+    )
+
+async def authentication_error_handler(
+    request: Request,
+    exc: AuthenticationError
+):
+
+    logger.warning(
+        f"""
+        Authentication failed |
+        method={request.method} |
+        path={request.url.path} |
+        detail={exc}
+        """
+    )
+
+    return JSONResponse(
+        status_code=401,
+        content={
+            "message": str(exc)
+        }
+    )

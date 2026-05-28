@@ -20,3 +20,15 @@ class IncidentDeletionError(IncidentError):
 
 class IncidentNotFoundError(IncidentError):
     pass
+
+class UserCreationError(Exception):
+    pass
+
+class UserRetrievalError(Exception):
+    pass
+
+class UserNotFoundError(Exception):
+    pass
+
+class AuthenticationError(Exception):
+    pass

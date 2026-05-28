@@ -1,9 +1,11 @@
 from AIIntelligenceWorkflows.Exceptions.IncidentAIExceptions import *
 from Models.VehicleIncidentModel import *
-from DatabaseLayer.db import get_incidents_db, create_incident_db, get_incident_by_id_db, update_incident_id_db, delete_incident_id_db
+from DatabaseLayer.db import get_incidents_db, create_incident_db, get_incident_by_id_db, get_user_by_username_db, get_users_db, update_incident_id_db, delete_incident_id_db, create_user_db
 from Services.Exceptions.IncidentExceptions import *
 from AIIntelligenceWorkflows.IncidentAIWorkflow import process_incident_intelligence
 from AIIntelligenceWorkflows.IncidentIntelligenceRetrievalWorkflow import retrieve_incidents_intelligence
+from Models.UserModel import UserModel
+from AuthHandler.PasswordHandler import *
 
 def get_incidents_service():
     try:
@@ -72,4 +74,37 @@ def search_query(query):
         raise IncidentRetrievalError(f"Error retrieving results for query: {query}") from e
     
 
+def create_user_service(user: UserModel):
+    try:
+        hashed_password = hash_password(user.password)
+        # Here you would add logic to save the user to the database
+        # For now, it's a placeholder to show where the user creation logic would go
+        user_id = create_user_db(user.username, hashed_password,"USER")
+        return {"message": f"User {user.username} created successfully", "user_id": user_id}
+    except Exception as e:
+        raise UserCreationError(f"Error creating user: {user.username}") from e
 
+
+def get_users_service():
+    try:
+        return get_users_db()
+    except Exception as e:
+        raise UserRetrievalError(f"Error fetching users") from e
+    
+def login_user_service(user: UserModel):
+    try:
+        user_record = get_user_by_username_db(user.username)
+        if not user_record:
+            raise UserRetrievalError(f"User {user.username} not found")
+        stored_hashed_password = user_record[0]["hashed_password"]  # Assuming the hashed password is in the third column
+        if verify_password(user.password, stored_hashed_password):
+            return {"message": f"User {user.username} logged in successfully"}
+        else:
+            raise AuthenticationError(f"Invalid credentials for user {user.username}")
+    except UserRetrievalError:
+        raise
+    except AuthenticationError:
+        raise
+    except Exception as e:
+        raise UserRetrievalError(f"Error during login for user: {user.username}") from e
+        
