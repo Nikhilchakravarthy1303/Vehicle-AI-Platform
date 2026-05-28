@@ -31,17 +31,17 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # 4. Build the image using Docker Compose
-      # 💡 Docker Compose will read the IMAGE_TAG environment variable and tag the image
+      # 💡 We hardcoded your registry path in lowercase: ghcr.io/nikhilchakravarthy1303/vehicle-ai-platform/vehicle-ai-app
       - name: 🐳 Build Docker Image via Compose
         env:
-          IMAGE_TAG: ghcr.io/${{ github.repository }}/vehicle-ai-app:${{ github.sha }}
+          IMAGE_TAG: ghcr.io/nikhilchakravarthy1303/vehicle-ai-platform/vehicle-ai-app:${{ github.sha }}
         run: docker compose build
 
       # 5. Tag as 'latest' and Push both tags to GHCR
       - name: 📤 Push Docker Images to GHCR
         env:
-          COMMIT_TAG: ghcr.io/${{ github.repository }}/vehicle-ai-app:${{ github.sha }}
-          LATEST_TAG: ghcr.io/${{ github.repository }}/vehicle-ai-app:latest
+          COMMIT_TAG: ghcr.io/nikhilchakravarthy1303/vehicle-ai-platform/vehicle-ai-app:${{ github.sha }}
+          LATEST_TAG: ghcr.io/nikhilchakravarthy1303/vehicle-ai-platform/vehicle-ai-app:latest
         run: |
           # Tag the built commit image as 'latest'
           docker tag $COMMIT_TAG $LATEST_TAG
