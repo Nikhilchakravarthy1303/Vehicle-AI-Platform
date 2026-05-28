@@ -1,0 +1,20 @@
+services:
+  web-app:
+    # 💡 Allows overriding the image name dynamically for the CI/CD pipeline
+    image: ${IMAGE_TAG:-ghcr.io/nikhilchakravarthy1303/vehicle-ai-platform/vehicle-ai-app:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=dev
+    volumes:
+      # 💡 Uses Docker-managed Named Volumes instead of raw host directories
+      - vehicle-db:/app/data
+      - vehicle-logs:/app/logs
+
+# 💡 Instructs Docker to define and manage these virtual storage drives
+volumes:
+  vehicle-db:
+  vehicle-logs:

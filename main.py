@@ -1,4 +1,11 @@
+import os
 from dotenv import load_dotenv
+ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
+
+if ENVIRONMENT == "local":
+    load_dotenv(".env.local")
+elif ENVIRONMENT == "dev":
+    load_dotenv(".env.dev")
 from fastapi import FastAPI, HTTPException
 from Models.VehicleIncidentModel import *
 from Models.UserModel import *
@@ -6,17 +13,10 @@ from Services.Incidents import *
 from DatabaseLayer.db import init_db
 from Services.Exceptions.IncidentExceptions import *
 from WebTransportRegistration.Services.IncidentRegister import register_exception_handlers
-import os
-from dotenv import load_dotenv
 from fastapi import Depends
 from AuthHandler.JWTHandler import get_current_user
 
-ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
 
-if ENVIRONMENT == "local":
-    load_dotenv(".env.local")
-elif ENVIRONMENT == "dev":
-    load_dotenv(".env.dev")
 
 init_db()  # Initialize the database when the application starts
 
