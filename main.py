@@ -46,7 +46,7 @@ def get_incident_by_id_route(id: int):
    
 
 
-@app.post("/update_incident/{id}")
+@app.patch("/update_incident/{id}")
 def update_incident_id_route(id: int, data: VehicleIncidentUpdateModel):
     return update_incident_id_service(id, data.model_dump())
 
