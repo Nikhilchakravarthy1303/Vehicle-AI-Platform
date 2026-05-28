@@ -6,6 +6,8 @@ from AIIntelligenceWorkflows.IncidentAIWorkflow import process_incident_intellig
 from AIIntelligenceWorkflows.IncidentIntelligenceRetrievalWorkflow import retrieve_incidents_intelligence
 from Models.UserModel import UserModel
 from AuthHandler.PasswordHandler import *
+from AuthHandler.JWTHandler import *
+
 
 def get_incidents_service():
     try:
@@ -67,12 +69,15 @@ def delete_incident_id_service(id):
         raise IncidentDeletionError(f"Error deleting incident") from e
     
 
+
+
 def search_query(query):
     try:
         return retrieve_incidents_intelligence(query)
     except Exception as e:
         raise IncidentRetrievalError(f"Error retrieving results for query: {query}") from e
     
+
 
 def create_user_service(user: UserModel):
     try:
@@ -85,12 +90,16 @@ def create_user_service(user: UserModel):
         raise UserCreationError(f"Error creating user: {user.username}") from e
 
 
+
+
 def get_users_service():
     try:
         return get_users_db()
     except Exception as e:
         raise UserRetrievalError(f"Error fetching users") from e
     
+
+
 def login_user_service(user: UserModel):
     try:
         user_record = get_user_by_username_db(user.username)
@@ -98,7 +107,8 @@ def login_user_service(user: UserModel):
             raise UserRetrievalError(f"User {user.username} not found")
         stored_hashed_password = user_record[0]["hashed_password"]  # Assuming the hashed password is in the third column
         if verify_password(user.password, stored_hashed_password):
-            return {"message": f"User {user.username} logged in successfully"}
+            access_token = create_access_token(data={"sub": user.username})
+            return {"access_token": access_token, "token_type": "bearer"}
         else:
             raise AuthenticationError(f"Invalid credentials for user {user.username}")
     except UserRetrievalError:
